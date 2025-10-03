@@ -1,0 +1,50 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        color: black;
+    }
+    .box {
+        border: 1px solid #ccc;
+        height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #f9f9f9;
+    }
+</style>
+<div class="box" id="messageboxthing"></div>
+<input type="text" id="messageInput" placeholder="Send a message">
+<button onclick="addToMessageLog()">Send</button>
+<p id="output"></p>
+<script>
+    // function copied from my other project cause i am lazy.
+    function addToMessageLog() {
+      let message = document.getElementById("messageInput").value;
+
+      fetch("https://idkchat.onrender.com/message", {
+        method: "POST",
+        headers: {"Content-Type": "text/plain"},
+        body: message
+      })
+      .then(res => res.text())
+      .then(text => {
+        document.getElementById("output").innerText = text;
+        document.getElementById("messageInput").value = "";
+      });
+    }
+    // get messages every 0.1 seconds from idkchat.onrender.com
+    async function getZeMessages() {
+      try {
+        // replace with https://idkchat.onrender.com/message
+        const res = await fetch("https://idkchat.onrender.com/message");
+        if (res.ok) {
+          const text = await res.text();
+          document.getElementById("messageboxthing").textContent = text;
+          document.getElementById("messageboxthing").style.whiteSpace = "pre-line";
+        }
+      } catch {}
+    }
+
+    setInterval(getZeMessages, 100);
+</script>
